@@ -6,8 +6,7 @@ import classNames from "classnames";
 
 
 const HeroesFilters = () => {
-
-    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state);
+    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state.filtersReducer);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
@@ -21,11 +20,11 @@ const HeroesFilters = () => {
         // eslint-disable-next-line
     }, []);
 
-    // if (filtersLoadingStatus === "loading") {
-    //     return <Spinner />;
-    // } else if (filtersLoadingStatus === "error") {
-    //     return <h5 className="text-center mt-5">Ошибка загрузки</h5>
-    // }
+    if (filtersLoadingStatus === "loading") {
+        return <h4 className="text-center mt-5">Загрузка...</h4>;
+    } else if (filtersLoadingStatus === "error") {
+        return <h5 className="text-center mt-5">Ошибка загрузки</h5>
+    }
 
     const renderFilters = (arr) => {
         if (arr.length === 0) {
@@ -34,7 +33,6 @@ const HeroesFilters = () => {
 
         // Данные в json-файле я расширил классами и текстом
         return arr.map(({name, className, label}) => {
-
             // Используем библиотеку classnames и формируем классы динамически
             const btnClass = classNames('btn', className, {
                 'active': name === activeFilter

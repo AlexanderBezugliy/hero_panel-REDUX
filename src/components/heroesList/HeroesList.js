@@ -4,10 +4,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleted } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
+import { createSelector } from 'reselect';
 
 
 const HeroesList = () => {
-    const {filteredHeroes, heroesLoadingStatus} = useSelector(state => state);
+    const filteredHeroesSelector = createSelector(
+        (state) => state.filtersReducer.activeFilter,
+        (state) => state.heroesReducer.heroes,
+        (filters, heroes) => {
+            if (filters === 'all') {
+                return heroes;
+            } else {
+                return heroes.filter(item => item.element === filters);
+            }
+        }
+    )
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+
+    const heroesLoadingStatus = useSelector(state => state.heroesLoadingStatus);
+    
     const dispatch = useDispatch();
     const {request} = useHttp();
 
